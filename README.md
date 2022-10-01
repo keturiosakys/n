@@ -17,6 +17,6 @@ n the_spy/who_came_in_from_the_cold.txt
 ```
 
 ```
- .
-  └──  who_came_in_from_the_cold.txt
+the_spy/
+└── who_came_in_from_the_cold.txt
 ```
