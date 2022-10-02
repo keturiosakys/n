@@ -12,7 +12,7 @@ use std::process;
     after_help = "Example commands: \n
     n file.txt \n
     n folder/ \n
-    n ../new_folder/file.txt"
+    n ../new_folder/file_one.txt file_two.txt"
 )]
 struct Arguments {
     /// Complete or relative path to the file (or multiple files). If it ends with a / - the command will create a folder.
