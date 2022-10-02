@@ -6,22 +6,27 @@ use std::path::{Path, PathBuf};
 #[derive(Parser, Debug)]
 #[clap(author, version, about)]
 struct Arguments {
-    /// The complete or relative path to the file. If it ends with a / - will create a folder. If
-    /// an extension (e.g.: .txt) a file
+    /// Complete or relative path to the file (or multiple files). If it ends with a / - will create a folder.
     #[clap(name = "path/to/file")]
-    supplied_path: String,
+    supplied_path: Vec<String>,
 }
 
 fn main() {
-    let args = Arguments::parse();
-
-    let mut supplied_path = args.supplied_path.clone();
-
-    let result = match supplied_path.pop() {
-        Some('/') => create_folder(args.supplied_path),
-        Some(_) => create_file(args.supplied_path),
-        None => print_instructions(),
+    let args = {
+        match Arguments::try_parse() {
+            Ok(arguments) => arguments,
+            Err(err) => err.exit()
+        }
     };
+
+    for supplied_path in &args.supplied_path {
+        match supplied_path.chars().last() {
+            Some('/') => create_folder(supplied_path),
+            Some(_) => create_file(supplied_path),
+            None => print_instructions(),
+        };
+    }
+
 }
 
 fn print_instructions() -> Result<(), std::io::Error> {
@@ -29,9 +34,9 @@ fn print_instructions() -> Result<(), std::io::Error> {
     Ok(())
 }
 
-fn create_file(supplied_path: String) -> Result<(), std::io::Error> {
+fn create_file(supplied_path: &String) -> Result<(), std::io::Error> {
     let mut path_to_file = PathBuf::new();
-    path_to_file.push(&supplied_path);
+    path_to_file.push(supplied_path);
 
     match path_to_file.parent() {
         Some(_) => {
@@ -43,7 +48,10 @@ fn create_file(supplied_path: String) -> Result<(), std::io::Error> {
             create_dir_all(parent_dirs);
             let file = File::create(&absolute_path)?;
 
-            println!("Created a file at: {}", absolute_path.canonicalize().unwrap().display());
+            println!(
+                "Created a file at: {}",
+                absolute_path.canonicalize().unwrap().display()
+            );
         }
         None => {
             let file = File::create(&path_to_file)?;
@@ -54,7 +62,7 @@ fn create_file(supplied_path: String) -> Result<(), std::io::Error> {
     Ok(())
 }
 
-fn create_folder(supplied_path: String) -> Result<(), std::io::Error> {
+fn create_folder(supplied_path: &String) -> Result<(), std::io::Error> {
     let mut path_to_folder = PathBuf::new();
     path_to_folder.push(supplied_path);
 
@@ -64,7 +72,10 @@ fn create_folder(supplied_path: String) -> Result<(), std::io::Error> {
     let absolute_path = Path::new(parent_dirs).join(folder_name);
     create_dir_all(&absolute_path)?;
 
-    println!("Created a folder at: {}", absolute_path.canonicalize().unwrap().display());
+    println!(
+        "Created a folder at: {}",
+        absolute_path.canonicalize().unwrap().display()
+    );
 
     Ok(())
 }
