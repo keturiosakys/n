@@ -3,10 +3,18 @@ use clap::Parser;
 use std::fs::{self, create_dir_all, File};
 use std::path::{Path, PathBuf};
 
+/// A very simple utility to create files and folders in your terminal.
 #[derive(Parser, Debug)]
-#[clap(author, version, about)]
+#[command(author, version, about)]
+#[command(
+    arg_required_else_help(true),
+    after_help = "Example commands: \n
+    n file.txt \n
+    n folder/ \n
+    n ../new_folder/file.txt"
+)]
 struct Arguments {
-    /// Complete or relative path to the file (or multiple files). If it ends with a / - will create a folder.
+    /// Complete or relative path to the file (or multiple files). If it ends with a / - the command will create a folder.
     #[clap(name = "path/to/file")]
     supplied_path: Vec<String>,
 }
@@ -15,7 +23,7 @@ fn main() {
     let args = {
         match Arguments::try_parse() {
             Ok(arguments) => arguments,
-            Err(err) => err.exit()
+            Err(err) => err.exit(),
         }
     };
 
@@ -26,11 +34,12 @@ fn main() {
             None => print_instructions(),
         };
     }
-
 }
 
 fn print_instructions() -> Result<(), std::io::Error> {
-    println!("Error: no path provided. Make sure you supply the path like this: 'n /path/to/file ");
+    eprintln!(
+        "Error: no path provided. Make sure you supply the path like this: 'n /path/to/file "
+    );
     Ok(())
 }
 
@@ -49,13 +58,13 @@ fn create_file(supplied_path: &String) -> Result<(), std::io::Error> {
             let file = File::create(&absolute_path)?;
 
             println!(
-                "Created a file at: {}",
+                "Created a file: {}",
                 absolute_path.canonicalize().unwrap().display()
             );
         }
         None => {
             let file = File::create(&path_to_file)?;
-            println!("Created a file at: {}", path_to_file.display());
+            println!("Created a file: {}", path_to_file.display());
         }
     }
 
@@ -73,7 +82,7 @@ fn create_folder(supplied_path: &String) -> Result<(), std::io::Error> {
     create_dir_all(&absolute_path)?;
 
     println!(
-        "Created a folder at: {}",
+        "Created a folder: {}",
         absolute_path.canonicalize().unwrap().display()
     );
 
