@@ -2,6 +2,7 @@
 use clap::Parser;
 use std::fs::{self, create_dir_all, File};
 use std::path::{Path, PathBuf};
+use std::process;
 
 /// A very simple utility to create files and folders in your terminal.
 #[derive(Parser, Debug)]
@@ -54,13 +55,25 @@ fn create_file(supplied_path: &String) -> Result<(), std::io::Error> {
 
             let absolute_path = Path::new(parent_dirs).join(file_name);
 
-            create_dir_all(parent_dirs);
-            let file = File::create(&absolute_path)?;
+            match absolute_path.try_exists() {
+                Ok(true) => {
+                    println!("File {} exists!", &absolute_path.display());
+                    process::exit(1)
+                }
+                Ok(false) => {
+                    create_dir_all(parent_dirs);
+                    let file = File::create(&absolute_path)?;
 
-            println!(
-                "Created a file: {}",
-                absolute_path.canonicalize().unwrap().display()
-            );
+                    println!(
+                        "Created a file: {}",
+                        absolute_path.canonicalize().unwrap().display()
+                    );
+                }
+                Err(_) => {
+                    eprintln!("You don't have permission to create a file here!");
+                    process::exit(1)
+                }
+            }
         }
         None => {
             let file = File::create(&path_to_file)?;
@@ -79,12 +92,25 @@ fn create_folder(supplied_path: &String) -> Result<(), std::io::Error> {
     let folder_name = path_to_folder.file_name().unwrap();
 
     let absolute_path = Path::new(parent_dirs).join(folder_name);
-    create_dir_all(&absolute_path)?;
 
-    println!(
-        "Created a folder: {}",
-        absolute_path.canonicalize().unwrap().display()
-    );
+    match absolute_path.try_exists() {
+        Ok(true) => {
+            println!("Folder {} exists!", &absolute_path.display());
+            process::exit(1)
+        }
+        Ok(false) => {
+            create_dir_all(&absolute_path)?;
+
+            println!(
+                "Created a folder: {}",
+                absolute_path.canonicalize().unwrap().display()
+            );
+        }
+        Err(_) => {
+            eprintln!("You don't have permission to create a folder here!");
+            process::exit(1)
+        }
+    }
 
     Ok(())
 }
