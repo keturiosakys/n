@@ -1,6 +1,6 @@
 [package]
 name = "n"
-description = "A very simple utility to create files and folders"
+description = "newfile (n) - A very simple utility to create files and folders"
 readme = "README.md"
 authors = ["Laurynas Keturakis <hi@laurynas.cc>"]
 homepage = "https://github.com/keturiosakys/n"

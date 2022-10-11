@@ -1,8 +1,6 @@
-# n - create files and folders quickly
+# newfile (or simply n) - create files and folders quickly
 
-Create files and folders quickly with relative paths. It's like Sublime's AdvancedNewFile plugin but for your terminal.
-
-> Note: this is homebrew experimental software that will probably break your computer.
+Create files and folders quickly with relative paths. It's like [Sublime's AdvancedNewFile](https://github.com/SublimeText/AdvancedNewFile) plugin but for your terminal.
 
 ## Usage
 
