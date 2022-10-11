@@ -1,5 +1,5 @@
 [package]
-name = "n"
+name = "newfile"
 description = "newfile (n) - A very simple utility to create files and folders"
 readme = "README.md"
 authors = ["Laurynas Keturakis <hi@laurynas.cc>"]
@@ -9,6 +9,10 @@ categories = ["command-line-utilities"]
 license = "MIT"
 version = "0.1.0"
 edition = "2021"
+
+[[bin]]
+name = "n"
+path = "src/main.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
