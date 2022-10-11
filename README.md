@@ -2,6 +2,12 @@
 
 Create files and folders quickly with relative paths. It's like [Sublime's AdvancedNewFile](https://github.com/SublimeText/AdvancedNewFile) plugin but for your terminal.
 
+## Install
+
+```bash
+cargo install newfile
+```
+
 ## Usage
 
 ```bash
